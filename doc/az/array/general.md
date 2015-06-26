@@ -30,8 +30,8 @@ iterasiyasında onu oxumağın bir maliyyəsi vardır. Və bu halda yeni JavaScr
 mühərriklərinin bunu optimizasıya **edə bilərlərsə** də, kodun yeni mühərriklərdə
 işləyəcəyinə zəmanət verilə bilməz.
 
-In fact, leaving out the caching may result in the loop being only **half as
-fast** as with the cached length.
+Əslində keşləməməni etməmək nəticədə keşlənmiş uzunluq ilə müqayisədə **iki dəfə daha**
+yavaş işləməyə səbəb ola bilər.
 
 ### `length` Özəlliyi
 

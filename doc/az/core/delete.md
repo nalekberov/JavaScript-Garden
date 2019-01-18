@@ -1,36 +1,36 @@
-## The `delete` Operator
+## `delete` Operatoru
 
-In short, it's *impossible* to delete global variables, functions and some other
-stuff in JavaScript which have a `DontDelete` attribute set.
+Qısa olaraq, global dəyişənləri, funksiyaları və bəzi digər `DontDelete` atributuna
+sahib olan JavaScript nəsnələrini silmək *mümkünsüzdür*
 
-### Global code and Function code
+### Global kod və Funksiya kodu
 
-When a variable or a function is defined in a global or a [function
-scope](#function.scopes) it is a property of either the Activation object or
-the Global object. Such properties have a set of attributes, one of which is
-`DontDelete`. Variable and function declarations in global and function code
-always create properties with `DontDelete`, and therefore cannot be deleted.
+Dəyişən və ya funksiya, global və ya [funksiya skopunda](#function.scopes) 
+tanıdıldığı zaman, o ya Activation object ya da Global objectin xüsusiyyəti olur.
+Bu cür xüsusiyyətlərin müəyyən atributları olur, onlardan biri də `DontDelete`
+atributudur. Global və ya funksiya kodunun dəyişən və funksiyaları hər zaman
+,özəllikləri `DontDelete` ilə yaradır, ona görə də silinə bilməzlər.
 
-    // global variable:
-    var a = 1; // DontDelete is set
+    // global dəyişən:
+    var a = 1; // DontDelete təyin olunub
     delete a; // false
     a; // 1
 
-    // normal function:
-    function f() {} // DontDelete is set
+    // normal funksiya:
+    function f() {} // DontDelete təyin olunub
     delete f; // false
     typeof f; // "function"
 
-    // reassigning doesn't help:
+    // yenidən təyin etmək kömək etmir:
     f = 1;
     delete f; // false
     f; // 1
 
-### Explicit properties
+### Aşkar xüsusiyyələr
 
-Explicitly set properties can be deleted normally.
+Aşkar şəkildə təyin olunmuş özəlliklər normalda silinə bilir.
 
-    // explicitly set property:
+    // Aşkar təyin olunmuş özəllik:
     var obj = {x: 1};
     obj.y = 2;
     delete obj.x; // true
@@ -38,28 +38,29 @@ Explicitly set properties can be deleted normally.
     obj.x; // undefined
     obj.y; // undefined
 
-In the example above, `obj.x` and `obj.y` can be deleted because they have no 
-`DontDelete` attribute. That's why the example below works too.
+Yuxarıdakı misalda `obj.x` və `obj.y` silinə bilərlər, çünki `DontDelete` atributları
+yoxdur. Buna görə aşağıdakı misal da işləyir.
 
-    // this works fine, except for IE:
+    // bu yaxşı işləyir, IE xaric:
     var GLOBAL_OBJECT = this;
     GLOBAL_OBJECT.a = 1;
-    a === GLOBAL_OBJECT.a; // true - just a global var
+    a === GLOBAL_OBJECT.a; // true - sadəcə bir global dəyişən
     delete GLOBAL_OBJECT.a; // true
     GLOBAL_OBJECT.a; // undefined
 
-Here we use a trick to delete `a`. [`this`](#function.this) here refers 
-to the Global object and we explicitly declare variable `a` as its property 
-which allows us to delete it.
+Burda biz `a` dəyişənini silmək üçün hiylədən istifadə edirik. [`this`](#function.this)
+burada Global object-ə müraciət edir və biz aşkar şəkildə `a` dəyişənini onun xüsusiyyəti
+kimi elan edirik, hansı ki, bu da bizə onu silməyə imkan yaradır.
 
-IE (at least 6-8) has some bugs, so the code above doesn't work.
+IE (ən azından 6-8) müəyyən buglara sahibdir, ona görə yuxarıdakı kod işləmir.
 
-### Function arguments and built-ins
 
-Functions' normal arguments, [`arguments` objects](#function.arguments) 
-and built-in properties also have `DontDelete` set.
+### Funksiya arqumentləri və hazır gələnlər
 
-    // function arguments and properties:
+Funksiyaların normal arqumentləri [`arguments` objects](#function.arguments)
+və hazır gələn xüsusiyyətlər də həmçinin `DontDelete` atributu ilə gəlir.
+
+    // funksiya arqumentləri və xüsusiyyətlər:
     (function (x) {
     
       delete arguments; // false
@@ -74,12 +75,14 @@ and built-in properties also have `DontDelete` set.
       
     })(1);
 
-### Host objects
-    
-The behaviour of `delete` operator can be unpredictable for hosted objects. Due
-to the specification, host objects are allowed to implement any kind of behavior. 
+### Host obyektlər
 
-### In conclusion
+`delete` operatorunun davranışı host olunmuş obyektlər üçün gözlənilməzdir.
+Spesifikasiyaya görə, host obyektlər istənilən cür davranışı tətbiq edə bilərlər.
 
-The `delete` operator often has unexpected behaviour and can only be safely
-used to delete explicitly set properties on normal objects.
+
+### Xülasə
+
+`delete` operatoru bəzən gözlənilməyən davranışa sahib olur və ancaq normal obyektlərdə
+aşkar şəkildə təyin olunmuş xüsusiyyətlərin silinməsi üçün sağlam şəkildə istifadə
+oluna bilər.

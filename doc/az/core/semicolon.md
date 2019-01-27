@@ -1,30 +1,30 @@
-## Automatic Semicolon Insertion
+## Avtomatik nöqtəvergül yerləşdirməsi
 
-Although JavaScript has C style syntax, it does **not** enforce the use of
-semicolons in the source code, so it is possible to omit them.
+Baxmayaraq ki, JavaScript C üslubu sintaksisə sahibdir, o nöqtəvergül
+istifadəsini məcbur **etmir**, ona görə onları ötürmək mümkündür.
 
-JavaScript is not a semicolon-less language. In fact, it needs the 
-semicolons in order to understand the source code. Therefore, the JavaScript
-parser **automatically** inserts them whenever it encounters a parse
-error due to a missing semicolon.
-
-    var foo = function() {
-    } // parse error, semicolon expected
-    test()
-
-Insertion happens, and the parser tries again.
+JavaScript nöqtəvergülsüz dil deyil. Əslində, o qaynaq kodunu anlamaq
+üçün nöqtəvergüllərə ehtiyac duyur. Ona görə də, JavaScript təhliledicisi 
+çatışmayan nöqtəvergül səbəbilə yaranan təhlil xətası ilə üzləşdiyi zaman 
+**avtomatik olaraq** nöqtəvergülləri yerləşdirir.
 
     var foo = function() {
-    }; // no error, parser continues
+    } // təhlil xətası, nöqtəvergül gözlənilirdi
     test()
 
-The automatic insertion of semicolon is considered to be one of **biggest**
-design flaws in the language because it *can* change the behavior of code.
+Yerləşdirmə baş verir, və təhliledici yenidən cəhd edir.
 
-### How it Works
+    var foo = function() {
+    }; // xəta yoxdur, təhliledici davam edir
+    test()
 
-The code below has no semicolons in it, so it is up to the parser to decide where
-to insert them.
+Avtomatik nöqtəvergül yerləşdirməsi dilin **ən böyük** boşluqlarından biri
+hesab olunur, çünki kodun davranışını dəyişə *bilər*.
+
+### Necə işləyir
+
+Aşağıdakı kodda nöqtəvergül istifadə olunmayıb, ona görə onları yerləşdirmək
+artıq təhliledicinin verəcəyi qərardır.
 
     (function(window, undefined) {
         function test(options) {
@@ -53,62 +53,62 @@ to insert them.
 
     })(window)
 
-Below is the result of the parser's "guessing" game.
+Aşağıda təhliledicinin "təxminetmə" oyununun nəticəsidir.
 
     (function(window, undefined) {
         function test(options) {
 
-            // Not inserted, lines got merged
+            // yerləşdirilmədi, sətirlər birləşdirildi
             log('testing!')(options.list || []).forEach(function(i) {
 
-            }); // <- inserted
+            }); // <- yerləşdirildi
 
             options.value.test(
                 'long string to pass here',
                 'and another long string to pass'
-            ); // <- inserted
+            ); // <- yerləşdirildi
 
-            return; // <- inserted, breaks the return statement
-            { // treated as a block
+            return; // <- yerləşdirildi, return ifadəsini qırır
+            { // block olaraq qəbul edildi
 
-                // a label and a single expression statement
+                // etiket (label) və ifadə elanı
                 foo: function() {} 
-            }; // <- inserted
+            }; // <- yerləşdirildi
         }
-        window.test = test; // <- inserted
+        window.test = test; // <- yerləşdirildi
 
-    // The lines got merged again
+    // sətirlər yenidən birləşdirildi
     })(window)(function(window) {
-        window.someLibrary = {}; // <- inserted
+        window.someLibrary = {}; // <- yerləşdirildi
 
-    })(window); //<- inserted
+    })(window); //<- yerləşdirildi
 
-> **Note:** The JavaScript parser does not "correctly" handle return statements 
-> that are followed by a new line. While this is not necessarily the fault of
-> the automatic semicolon insertion, it can still be an unwanted side-effect. 
+> **Qeyd:** Javascript təhliledicisinin özündən sonra yeni sətir gələn return 
+> ifadələrini "düzgün" ələ ala bilmir. Bu tam olaraq avtomatik nöqtəvergül 
+> yerləşdirilməsinin xətası olmasa da yenə də istənməyən bir yan-təsirdir.
 
-The parser drastically changed the behavior of the code above. In certain cases,
-it does the **wrong thing**.
+Təhliledici yuxarıdakı kodun davranışını ciddi şəkildə dəyişdi. Müəyyən hallarda bu
+**yanlış** nəticələr gətirir.
 
-### Leading Parenthesis
+### Öndəgələn mötərizə
 
-In case of a leading parenthesis, the parser will **not** insert a semicolon.
+Mötərizənin öndə gələməsi halında təhliledici nöqtəvergül **yerləşdirməyəcək**.
 
     log('testing!')
     (options.list || []).forEach(function(i) {})
 
-This code gets transformed into one line.
+Bu kod bir sətrə çevriləcək.
 
     log('testing!')(options.list || []).forEach(function(i) {})
 
-Chances are **very** high that `log` does **not** return a function; therefore,
-the above will yield a `TypeError` stating that `undefined is not a function`.
+Ehtimallar **çox** yüksəkdir ki, `log` funksiya **qaytarmayacaq**; ona görə də,
+yuxarıdakı `undefined is not a function` ifadə edən `TypeError`a gətirib çıxaraq.
 
-### In Conclusion
+### Xülasə
 
-It is highly recommended to **never** omit semicolons. It is also recommended
-that braces be kept on the same line as their corresponding statements and to
-never omit them for single-line `if` / `else` statements. These measures will
-not only improve the consistency of the code, but they will also prevent the
-JavaScript parser from changing code behavior.
+Nöqtəvergülləri **heç vaxt** ötürməmək şiddətlə tövsiyyə olunur. Həmçinin fiqurlu
+mötərizələrin onların aid olduğu ifadələr ilə bir sətirdə saxlamaq və heç vaxt
+bir-sətirli `if` / `else` ifadələrində onları ötürməmək tövsiyyə olunur. Bu ölçülər
+təkcə kodununuz düzgün olmasını təmin etməyəcək, həm də JavaScript təhliledicisinin
+kodun davranışını dəyişməsinin qarşısını alacaq.
 

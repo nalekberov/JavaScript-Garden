@@ -1,15 +1,14 @@
-## Constructors 
+## Konstruktorlar
 
-Constructors in JavaScript are yet again different from many other languages. Any
-function call that is preceded by the `new` keyword acts as a constructor.
+Javascript-də konstruktorlar da başqa dillərdən fərqlidir. İstənilən önündə `new`
+ilə gələn funksiya çağırışı konstruktor olaraq çıxış edir.
 
-Inside the constructor - the called function - the value of `this` refers to a 
-newly created object. The [prototype](#object.prototype) of this **new** 
-object is set to the `prototype` of the function object that was invoked as the
-constructor.
+Konstruktorların - çağırılan funksiyakların - içində `this`in dəyəri yeni yaranmış
+obyektə müraciət edir. Bu **yeni** obyektin [prototipi](#object.prototype) konstruktor
+olaraq çağırılan funksiyanın `prototype`inə təyin olunur.
 
-If the function that was called has no explicit `return` statement, then it
-implicitly returns the value of `this` - the new object. 
+Əgər çağırılan funksiyanın aşkar `return` ifadəsi yoxdursa, onda o o qeyri-aşkar
+şəkildə `this`in - yeni obyektin - dəyərini qaytarır.
 
     function Person(name) {
         this.name = name;
@@ -21,16 +20,17 @@ implicitly returns the value of `this` - the new object.
 
     var sean = new Person();
 
-The above calls `Person` as constructor and sets the `prototype` of the newly
-created object to `Person.prototype`.
+Yuxarıdakı `Person`u konstruktor olaraq çağırır və yeni yaranmış obyektin
+`prototype`ini `Person.prototype` olaraq təyin edir.
 
-In case of an explicit `return` statement, the function returns the value 
-specified by that statement, but **only** if the return value is an `Object`.
+Aşkar `return` ifadəsi halında, funksiya bu ifadə tərəfindən göstərilən
+dəyəri qaytarır, amma bir şərt ilə ki, qaytarılan dəyər **yalnız** bir 
+`Object`dir.
 
     function Car() {
         return 'ford';
     }
-    new Car(); // a new object, not 'ford'
+    new Car(); // yeni obyekt, 'ford' deyil
 
     function Person() {
         this.someValue = 2;
@@ -39,23 +39,23 @@ specified by that statement, but **only** if the return value is an `Object`.
             name: 'Charles'
         };
     }
-    new Person(); // the returned object ({name:'Charles'}), not including someValue
+    new Person(); // qaytarılab obyekt ({name:'Charles'}), someValue olmamaq şərtilə
 
-When the `new` keyword is omitted, the function will **not** return a new object. 
+`new` açarsözü ötürüldüyü zaman, funksiya yeni bir obyekt **qaytarmayacaq**.
 
     function Pirate() {
         this.hasEyePatch = true; // gets set on the global object!
     }
     var somePirate = Pirate(); // somePirate is undefined
 
-While the above example might still appear to work in some cases, due to the
-workings of [`this`](#function.this) in JavaScript, it will use the
-*global object* as the value of `this`.
+Yuxarıdakı nümunə bəzi hallarda işlədiyi halda, JavaScript-də 
+[`this`](#function.this)in işləmə qaydalarına əsasən, o
+*global object*i `this` olaraq istifadə edəcək.
 
-### Factories
+### Factorilər
 
-In order to be able to omit the `new` keyword, the constructor function has to 
-explicitly return a value.
+`new` açarsözünü ötürməkdən ötrü, konstruktor funksiyası aşkar şəkildə bir dəyər
+qaytarmalıdır.
 
     function Robot() {
         var color = 'gray';
@@ -69,25 +69,23 @@ explicitly return a value.
     new Robot();
     Robot();
 
-Both calls to `Robot` return the same thing, a newly created object that
-has a property called `getColor`, which is a 
-[Closure](#function.closures).
+`Robot`a olan hər iki çağırış eyni şeyi  - [Closure](#function.closures) 
+kimi çıxış edən `getColor` xüsusiyyəti olan yeni yaranmış obyekti - qaytarır.
 
-It should also be noted that the call `new Robot()` does **not** affect the
-prototype of the returned object. While the prototype will be set on the newly
-created object, `Robot` never returns that new object.
+Onu da qeyd etmək lazımdır ki, `new Robot()` çağırışı qaytarılan obyektin
+prototipinə təsir **etmir**. Prototip yeni yaradılmış obyektə təyin olunduğu
+halda, `Robot` heç vaxt bu yeni obyekti qaytarmır.
 
-In the above example, there is no functional difference between using and
-not using the `new` keyword.
+Yuxarıdakı misalda, `new` açarsözünün istifadə etməklə etməmək arasında
+funksional fərq yoxdur.
 
+### Factorilər ilə yeni obketlərin yaradılması
 
-### Creating New Objects via Factories
+`new`nun istifadəsini çox vaxt istifadə **etməmək** tövsiyyə olunur, çünki
+onun istifadəsini unutmaq baqlara gətirib çıxara bilər.
 
-It is often recommended to **not** use `new` because forgetting its use may
-lead to bugs.
-
-In order to create a new object, one should rather use a factory and construct a 
-new object inside of that factory.
+Yeni obyekti yaratmaqdan ötrü, daha yaxşısı factory-lərdən istifadə olunmalıdır,
+və bu factory-lərin içində yeni obyekt düzəldilməlidir.
 
     function CarFactory() {
         var car = {};
@@ -106,22 +104,21 @@ new object inside of that factory.
         return car;
     }
 
-While the above is robust against a missing `new` keyword and certainly makes 
-the use of [private variables](#function.closures) easier, it comes with some 
-downsides.
+Yuxarıdakı əskik `new` açarsözünə qarşı möhkəm olsa, və mütləq şəkildə
+[private variables](#function.closures) istifadəsini daha rahat etsə də,
+bir sıra mənfi xüsusiyyətlərlə gəlir.
 
- 1. It uses more memory since the created objects do **not** share the methods
-    on a prototype.
- 2. In order to inherit, the factory needs to copy all the methods from another
-    object or put that object on the prototype of the new object.
- 3. Dropping the prototype chain just because of a left out `new` keyword
-    is contrary to the spirit of the language.
+ 1. O daha çox yaddaş istifa edir, çünki yeni yaradılmış obyektlər metodları 
+    prototipdə **paylaşmır**.
+ 2. Varisliyi etmək üçün factory bir obyektin bütün metodlarını kopyalamalı və
+    onları yeni obyektin prototipdində yerləşdirməlidir.
+ 3. Əskik `new` açarsözünə görə prototip zincirini atmaq dilin ruhuna ziddir.
 
-### In Conclusion
+### Xülasə
 
-While omitting the `new` keyword might lead to bugs, it is certainly **not** a
-reason to drop the use of prototypes altogether. In the end it comes down to
-which solution is better suited for the needs of the application. It is
-especially important to choose a specific style of object creation and use it
-**consistently**.
+`new` açarsözünü ötürmək baqlara gətirib çıxardığı halda, o prototiplərin 
+istifadəsini tamamilə atmaq üçün əlbəttə səbəb **deyil**. Nəticədə verilmiş
+tətbiqin ehtiyacları üçün hansı həllin daha uyğun gəldiyidir. Obyekt
+yaradılması üçün spesifik üslubunun seçilməsi və onun **düzgün** istifadəsi
+isə xüsusilı önəm daşıyır.
 

@@ -1,15 +1,15 @@
 ## `arguments` Obyekti
 
-JavaScript-də hər bir funksiyanın əhatə dairəsin xüsusi `arguments` dəyişəninə 
+JavaScript-də hər bir funksiyanın əhatə dairəsi xüsusi `arguments` dəyişəninə 
 müraciət edə bilər. Bu dəyişən funksiyaya ötürülmüş bütün arqumentlərin 
 siyahısını özündə saxlayır.
 
 > **Qeyd:** `arguments` funksiyanın əhatə dairəsində `var` vasitəsilə təyin 
-> olunduğuvə ya formal parametrin adı olduğu halda,c`arguments` obyekti 
+> olunduğu və ya formal parametrin adı olduğu halda, `arguments` obyekti 
 > yaradılmayacaq.
 
 `arguments` obyekti `Array` **deyil**. Sıranın bəzi semantikasına - daha dəqiq
-`length` xüsusiyyəti - sahib olduğu halda, o bunu `Array.prototype`dan 
+`length` xüsusiyyətinə - sahib olduğu halda, o bunu `Array.prototype`dan 
 gətirmir və faktiki olaraq `Object`dir.
 
 Bu səbəbdən `arguments` üzərində `push`, `pop` və ya `slice` kimi standart
@@ -39,9 +39,9 @@ tövsiyyə edilən yoludur.
         // do stuff here
     }
 
-Başqa bir hiylə isə `call` və `apply`dan birlikdə metodları - öz arqumentləri ilə birlikdə,
-həmçinin `this`in dəyərini istifadə edən funksiyaları - ancaq arqumentlərini istifadə edən 
-normal funksiyalara çevirməkdir.
+Başqa bir hiylə isə `call` və `apply`dan birlikdə metodları - öz arqumentləri
+ilə birlikdə, həmçinin `this`in dəyərini istifadə edən funksiyaları - ancaq 
+arqumentlərini istifadə edən normal funksiyalara çevirməkdir.
 
     function Person(first, last) {
       this.first = first;
@@ -56,9 +56,9 @@ normal funksiyalara çevirməkdir.
     };
 
     // "fullname"in bağlı olmayan versiyasını yaratmaq, 'first' və 'last'
-		// xüsusiyyətləri birinci arqumentləri olaraq ötürülən istənilən obyektdə
-		// yararlıdır. Bu örtük, fullname sayının dəyişdiyi və arqumentlərin sırasının
-		// dəyişdiyi halda dəyişdirilməyə ehtiyac duymayacaq.
+    // xüsusiyyətləri birinci arqumentləri olaraq ötürülən istənilən obyektdə
+    // yararlıdır. Bu örtük, fullname sayının dəyişdiyi və arqumentlərin sırasının
+    // dəyişdiyi halda dəyişdirilməyə ehtiyac duymayacaq.
     Person.fullname = function() {
       // Nəticə: Person.prototype.fullname.call(this, joiner, ..., argN);
       return Function.call.apply(Person.prototype.fullname, arguments);
@@ -129,7 +129,7 @@ asılı ola bilər.
 `arguments.callee` və ya onun hər hansı bir xüsusisyyətini istifadə etmək
 **şiddətlə tövsiyyə edilmir**.
 
-> **ES5 Qeydi:** Sərt rejimdə istifadədən yığışdırıldığı üçün`arguments.callee` 
+> **ES5 Qeydi:** Sərt rejimdə istifadədən yığışdırıldığı üçün `arguments.callee` 
 > bir `TypeError` atacaq.
 
 [1]: http://en.wikipedia.org/wiki/Inlining

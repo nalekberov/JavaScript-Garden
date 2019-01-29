@@ -1,35 +1,36 @@
-## The `arguments` Object
+## `arguments` Obyekti
 
-Every function scope in JavaScript can access the special variable `arguments`.
-This variable holds a list of all the arguments that were passed to the function.
+JavaScript-də hər bir funksiyanın əhatə dairəsin xüsusi `arguments` dəyişəninə 
+müraciət edə bilər. Bu dəyişən funksiyaya ötürülmüş bütün arqumentlərin 
+siyahısını özündə saxlayır.
 
-> **Note:** In case `arguments` has already been defined inside the function's
-> scope either via a `var` statement or being the name of a formal parameter,
-> the `arguments` object will not be created.
+> **Qeyd:** `arguments` funksiyanın əhatə dairəsində `var` vasitəsilə təyin 
+> olunduğuvə ya formal parametrin adı olduğu halda,c`arguments` obyekti 
+> yaradılmayacaq.
 
-The `arguments` object is **not** an `Array`. While it has some of the 
-semantics of an array - namely the `length` property - it does not inherit from 
-`Array.prototype` and is in fact an `Object`.
+`arguments` obyekti `Array` **deyil**. Sıranın bəzi semantikasına - daha dəqiq
+`length` xüsusiyyəti - sahib olduğu halda, o bunu `Array.prototype`dan 
+gətirmir və faktiki olaraq `Object`dir.
 
-Due to this, it is **not** possible to use standard array methods like `push`,
-`pop` or `slice` on `arguments`. While iteration with a plain `for` loop works 
-just fine, it is necessary to convert it to a real `Array` in order to use the 
-standard `Array` methods on it.
+Bu səbəbdən `arguments` üzərində `push`, `pop` və ya `slice` kimi standart
+sıra metodlarından  istifadə etmək mümkün **deyil**. Sadə `for` dövrü
+yaxşı işlədiyi halda, onun üzərində standart `Array` metodlarından istifadə 
+etmək üçün onu real `Array`a çevirmək zəruridir.
 
-### Converting to an Array
+### Array-a çevirmək
 
-The code below will return a new `Array` containing all the elements of the 
-`arguments` object.
+Aşağıdakı kod `arguments` obyektinin bütün elementlərini daşıyan `Array`
+qaytaracaq.
 
     Array.prototype.slice.call(arguments);
 
-Because this conversion is **slow**, it is **not recommended** to use it in
-performance-critical sections of code.
+Bu çevirmə çox **yavaş** olduğuna görə, onu kodun performans yönündən həssas
+olduğu hissələrində istifadə etmək **tövsiyyə olunmur**.
 
-### Passing Arguments
+### Arqumentləri Ötürmək
 
-The following is the recommended way of passing arguments from one function to
-another.
+Göstərilən nümunə bir funksiyadan digər funksiyaya arqument ötürülməsinin
+tövsiyyə edilən yoludur.
 
     function foo() {
         bar.apply(null, arguments);
@@ -38,8 +39,9 @@ another.
         // do stuff here
     }
 
-Another trick is to use both `call` and `apply` together to turn methods - functions that use the
-value of `this` as well as their arguments - into normal functions which only use their arguments.
+Başqa bir hiylə isə `call` və `apply`dan birlikdə metodları - öz arqumentləri ilə birlikdə,
+həmçinin `this`in dəyərini istifadə edən funksiyaları - ancaq arqumentlərini istifadə edən 
+normal funksiyalara çevirməkdir.
 
     function Person(first, last) {
       this.first = first;
@@ -53,11 +55,12 @@ value of `this` as well as their arguments - into normal functions which only us
       return first + (joiner || " ") + last;
     };
 
-    // Create an unbound version of "fullname", usable on any object with 'first'
-    // and 'last' properties passed as the first argument. This wrapper will
-    // not need to change if fullname changes in number or order of arguments.
+    // "fullname"in bağlı olmayan versiyasını yaratmaq, 'first' və 'last'
+		// xüsusiyyətləri birinci arqumentləri olaraq ötürülən istənilən obyektdə
+		// yararlıdır. Bu örtük, fullname sayının dəyişdiyi və arqumentlərin sırasının
+		// dəyişdiyi halda dəyişdirilməyə ehtiyac duymayacaq.
     Person.fullname = function() {
-      // Result: Person.prototype.fullname.call(this, joiner, ..., argN);
+      // Nəticə: Person.prototype.fullname.call(this, joiner, ..., argN);
       return Function.call.apply(Person.prototype.fullname, arguments);
     };
 
@@ -70,13 +73,13 @@ value of `this` as well as their arguments - into normal functions which only us
     Person.fullname({ first: "Alan", last: "Turing" }, ", ", { order: "eastern" });
 
 
-### Formal Parameters and Arguments Indices
+### Formal Parametrlər və Arqumentlər İndeksləri
 
-The `arguments` object creates *getter* and *setter* functions for both its 
-properties, as well as the function's formal parameters.
+`arguments` obyekti *getter* və *setter* funksiyalarını həm xüsusiyyətləri,
+həm də funksiyanın formal parametrləri üçün yaradır.
 
-As a result, changing the value of a formal parameter will also change the value
-of the corresponding property on the `arguments` object, and the other way around.
+Nəticədə, formal parametrin dəyərini dəyişmək `arguments` obyektində ona uyğun
+gələn xüsusiyyətin də dəyişilməsinə gətirib çıxarır, və ya əksinə.
 
     function foo(a, b, c) {
         arguments[0] = 2;
@@ -91,41 +94,43 @@ of the corresponding property on the `arguments` object, and the other way aroun
     }
     foo(1, 2, 3);
 
-### Performance Myths and Truths
+### Performans Mifləri və Həqiqətləri
 
-The only time  the `arguments` object is not created is where it is declared as
-a name inside of a function or one of its formal parameters. It does not matter
-whether it is used or not.
+`arguments` obyekti yalnız, funksiyanın içində o adda nəsə elan olunduğu və ya
+funksiyanın formal parametlərindən biri olduğu zaman yaradılmır. O istifadə
+olunur və ya olunmur fərq etməz.
 
-Both *getters* and *setters* are **always** created; thus, using it has nearly 
-no performance impact at all, especially not in real world code where there is 
-more than a simple access to the `arguments` object's properties.
+*getter* və *setter*lər hər ikisi **həmişə** yaradılır; ona görə də, onu istifadə
+etməyin performansa demək olar ki, heç bir təsiri olmur, xüsusilə `arguments` 
+obyektinin xüsusiyyətlərinə çox sadə bir müraciət olan real dünya kodlarında.
 
-> **ES5 Note:** These *getters* and *setters* are not created in strict mode.
+> **ES5 Qeydi:** Bu *getter* və *setter*lər sərt rejimdə yaradılmır.
 
-However, there is one case which will drastically reduce the performance in
-modern JavaScript engines. That case is the use of `arguments.callee`.
+Lakin, bir hal var ki, modern JavaScript mühərriklərində performansı ciddi
+şəkildə aşağı salacaq. Bu hal `arguments.callee`ın istifadəsidir.
 
     function foo() {
-        arguments.callee; // do something with this function object
-        arguments.callee.caller; // and the calling function object
+        arguments.callee; // bu funksiya obyekti ilə nə isə et
+        arguments.callee.caller; // və çağıran funksiya obyekti
     }
 
     function bigLoop() {
         for(var i = 0; i < 100000; i++) {
-            foo(); // Would normally be inlined...
+            foo(); // Normal inlayn edilə bilərdi...
         }
     }
 
-In the above code, `foo` can no longer be a subject to [inlining][1] since it 
-needs to know about both itself and its caller. This not only defeats possible 
-performance gains that would arise from inlining, but it also breaks encapsulation
-because the function may now be dependent on a specific calling context.
+Yuxarıdakı kodda `foo` [inlayninqə][1] tabe ola bilməz, çünki onun həm özü,
+həm də çağıranı barədə bilməyə ehtiyacı vardır. Bu təkcə inlayninqdən əldə
+oluna biləcək mümkün performans qazancının qarşısını almır, o həm də
+enkaspsulyasiyanı qırır, çünki funksiya indi spesifik çağırılma kontekstindən
+asılı ola bilər.
 
-Making use of `arguments.callee` or any of its properties is **highly discouraged**.
+`arguments.callee` və ya onun hər hansı bir xüsusisyyətini istifadə etmək
+**şiddətlə tövsiyyə edilmir**.
 
-> **ES5 Note:** In strict mode, `arguments.callee` will throw a `TypeError` since 
-> its use has been deprecated.
+> **ES5 Qeydi:** Sərt rejimdə istifadədən yığışdırıldığı üçün`arguments.callee` 
+> bir `TypeError` atacaq.
 
 [1]: http://en.wikipedia.org/wiki/Inlining
 
